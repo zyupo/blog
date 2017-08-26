@@ -4,7 +4,6 @@ categories: 技术分享
 ---
 
 本文是前几天在同学群里的分享，经过整理后分享出来。
-
 ---
 大家晚上好，我是Fighter，目前在云家政担任高级运维开发，工作7年多了，对电商架构、运维自动化开发有一些经验。今晚由我给大家分享《Docker在云家政的应用》
 首先我介绍一下公司的背景，公司属于中小型创业公司，服务器数量不多，但是为了解决一些问题，我们引入了现在比较火的Docker技术。目前公司大规模使用了Docker，目前除了数据库应用，其他所有应用都在Docker容器内运行，下面我就Docker在公司的应用做一些分享。 
@@ -30,7 +29,6 @@ categories: 技术分享
 了解了Docker后，接下来看我们是怎么把Docker用起来的，这里容我再介绍一下公司的背景，公司属于中小型创业公司，服务器数量不多，没有用高大上的Kubernetes、Swarm等Docker集群管理工具，利用Python开发运维平台实现Docker的自动化管理。
 
 ----
-
 **我们都知道为了方便Docker的部署，一般都需要一个Docker私有仓库来存放镜像，我们也有自己的私有仓库。**
 看一下我们公司的私有镜像仓库是什么样子的，里面都存放了哪些镜像。
 
@@ -45,13 +43,14 @@ NoSQL镜像：如Redis服务，MongoDB服务，ES服务等；
 
 以我们其中一个应用服务环境镜像为例（Nginx+php），看一下我们的镜像制作过程：
 {% img [图片] /images/docker-registry-build.jpg %}
-|1、从Docker官方镜像仓库拉取PHP5.6作为基础镜像；
-|2、基于基础镜像安装Nginx以及PHP需要的扩展；
-|3、修改Nginx和PHP的配置；
-|4、生成指定服务的专用镜像；
-|5、将生成好的镜像提交至私有仓库；
+1、从Docker官方镜像仓库拉取PHP5.6作为基础镜像；
+2、基于基础镜像安装Nginx以及PHP需要的扩展；
+3、修改Nginx和PHP的配置；
+4、生成指定服务的专用镜像；
+5、将生成好的镜像提交至私有仓库；
 
 **看一下公司的Dockerfile文件及构建镜像的命令：**
+```
 # cat Dockerfile
 FROMphp:5.6.31-fpm
 |RUN apt-get update&& apt-get install -y \
@@ -67,13 +66,17 @@ FROMphp:5.6.31-fpm
     && pecl install redis mongodb mongo\
     && docker-php-ext-enable redismongodb mongo \
 COPY./nginx_vhost_conf/* /etc/nginx/sites-enabled/
-
+```
 
 构建镜像命令：
+```
 # docker build –t  hub.yunjiazheng.com/front_web:v1.0 .   
+```
 
 提交镜像到私有仓库：
+```
 # docker pushhub.yunjiazheng.com/front_web:v1.0   
+```
 
 **接下来看一下我们如何利用镜像快速部署环境的。**
 {% img [图片] /images/docker-registry-env.jpg %}
@@ -82,9 +85,12 @@ COPY./nginx_vhost_conf/* /etc/nginx/sites-enabled/
 - 然后，服务器上只需要执行docker pull 拉取一个镜像。
 - 最后执行docker run 启动镜像，就可以快速部署好一个需要的环境的。
 
+
 执行docker部署的命令：
-|# docker pullhub.yunjiazheng.com/front_web:v1.0
-|# docker run –d –p80:80 hub.yunjiazheng.com/front_web:v1.0
+```
+# docker pullhub.yunjiazheng.com/front_web:v1.0
+# docker run –d –p80:80 hub.yunjiazheng.com/front_web:v1.0
+```
 
 我来解释一下上述两条命令
 docker pullhub.yunjiazheng.com/front_web:v1.0 
@@ -129,16 +135,18 @@ docker run –d –p80:80 hub.yunjiazheng.com/front_web:v1.0
 -运维平台通过调用服务器上Docker  API接口实现对容器的启动、关闭、执行命令、更新镜像等自动化管理。
 
 **那么引入Docker给我们又带来了什么好处呢？**
--保证了运行环境的一致性，线上环境和测试环境使用同一个镜像，测试环境测试通过后，上线后不会出现因为环境差异而导致Bug；
--部署新项目方便快捷，不用考虑操作系统的差异而导致自动部署失败；
--新项目部署速度快，可在秒级部署好一个项目环境；
--服务镜像制作完成后，可以多次快速部署，方便快速横向扩展服务；
--支持跨平台部署；
+- 保证了运行环境的一致性，线上环境和测试环境使用同一个镜像，测试环境测试通过后，上线后不会出现因为环境差异而导致Bug；
+- 部署新项目方便快捷，不用考虑操作系统的差异而导致自动部署失败；
+- 新项目部署速度快，可在秒级部署好一个项目环境；
+- 服务镜像制作完成后，可以多次快速部署，方便快速横向扩展服务；
+- 支持跨平台部署；
 
 这些解决了之前前面所说的问题。
 
 目前我们公司运维平台因为一些功能还不完善，等完善后，后续会将运维平台开源。
+
 ------
+
 以上是公司对Docker使用的一点分享，后续如果有机会可以分享一下我们的运维平台。
 
 

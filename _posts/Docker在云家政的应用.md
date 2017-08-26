@@ -110,7 +110,7 @@ docker run –d –p80:80 hub.yunjiazheng.com/front_web:v1.0
 上面看了Docker部署环境的流程后，有一个问题，同一个镜像运行起来的容器如何区分测试环境和线上环境呢？
 为了区分容器运行的环境，接下来要用到云家政的运维平台了。
 
-{% img [图片] /images/docker/docker/docker-ops.jpg %}
+{% img [图片] /images/docker/docker-ops.jpg %}
 {% blockquote %}
 云家政运维平台运维是自主开发的平台，平台集成了环境管理、配置管理、发布管理、任务管理、监控报警管理、等功能。
 {% endblockquote %}

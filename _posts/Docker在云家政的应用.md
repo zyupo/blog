@@ -9,7 +9,7 @@ categories: 技术分享
 大家晚上好，我是Fighter，目前在云家政担任高级运维开发，工作7年多了，对电商架构、运维自动化开发有一些经验。今晚由我给大家分享《Docker在云家政的应用》
 首先我介绍一下公司的背景，公司属于中小型创业公司，服务器数量不多，但是为了解决一些问题，我们引入了现在比较火的Docker技术。目前公司大规模使用了Docker，目前除了数据库应用，其他所有应用都在Docker容器内运行，下面我就Docker在公司的应用做一些分享。 
 
-{% img [图片] /images/docker-500.jpg %}
+{% img [图片] /images/docker/docker-500.jpg %}
 
 上面这个报错大家应该也都见过。程序错误了，我们公司以前也会出现这个错误。
 **那么我们在没用Docker之前都遇到了哪些问题呢：**
@@ -21,7 +21,7 @@ categories: 技术分享
 
 这就是我们的现状，正是有了这些问题，我们就要解决这些问题。这里我再简单对Docker做一下介绍：
 
-{% img [图片] /images/docker-jieshao.jpg %}
+{% img [图片] /images/docker/docker-jieshao.jpg %}
 {% blockquote %}
 Docker是一个新的容器化开源项目，诞生于 2013 年初，最初是 dotCloud 公司内部的一个业余项目，项目后来加入了 Linux |基金会，遵从了 Apache 2.0 协议，基于 Google 公司推出的 Go 语言实现。
  
@@ -35,7 +35,7 @@ Docker 扩展了 Linux 容器（LinuxContainers）通过一个高层次的 API �
 ----
 **我们都知道为了方便Docker的部署，一般都需要一个Docker私有仓库来存放镜像，我们也有自己的私有仓库。**
 看一下我们公司的私有镜像仓库是什么样子的，里面都存放了哪些镜像。
-{% img [图片] /images/docker-registry.jpg %}
+{% img [图片] /images/docker/docker-registry.jpg %}
 我们的镜像仓库里面存放了应用服务镜像，如Apache，Nginx等。
 API服务镜像。
 NoSQL镜像：如Redis服务，MongoDB服务，ES服务等；
@@ -45,7 +45,7 @@ NoSQL镜像：如Redis服务，MongoDB服务，ES服务等；
 我们使用了Dockerfile制作镜像，每个环境都有对应的Dockerfille文件，可以根据实际需要随时调整镜像。
 
 以我们其中一个应用服务环境镜像为例（Nginx+php），看一下我们的镜像制作过程：
-{% img [图片] /images/docker-registry-build.jpg %}
+{% img [图片] /images/docker/docker-registry-build.jpg %}
 1、从Docker官方镜像仓库拉取PHP5.6作为基础镜像；
 2、基于基础镜像安装Nginx以及PHP需要的扩展；
 3、修改Nginx和PHP的配置；
@@ -82,7 +82,7 @@ COPY./nginx_vhost_conf/* /etc/nginx/sites-enabled/
 ```
 
 **接下来看一下我们如何利用镜像快速部署环境的。**
-{% img [图片] /images/docker-registry-env.jpg %}
+{% img [图片] /images/docker/docker-registry-env.jpg %}
 
 - 首先，我们服务器在安装完操作系统，初始化系统的时候就会把Docker客户端安装好。
 - 然后，服务器上只需要执行docker pull 拉取一个镜像。
@@ -110,7 +110,7 @@ docker run –d –p80:80 hub.yunjiazheng.com/front_web:v1.0
 上面看了Docker部署环境的流程后，有一个问题，同一个镜像运行起来的容器如何区分测试环境和线上环境呢？
 为了区分容器运行的环境，接下来要用到云家政的运维平台了。
 
-{% img [图片] /images/docker-ops.jpg %}
+{% img [图片] /images/docker/docker/docker-ops.jpg %}
 {% blockquote %}
 云家政运维平台运维是自主开发的平台，平台集成了环境管理、配置管理、发布管理、任务管理、监控报警管理、等功能。
 {% endblockquote %}
@@ -121,20 +121,20 @@ docker run –d –p80:80 hub.yunjiazheng.com/front_web:v1.0
 
 --------------------
 来看一下我们环境管理的界面：
-{% img [图片] /images/docker-ops-manage.jpg %}
+{% img [图片] /images/docker/docker-ops-manage.jpg %}
 
 环境参数的管理界面：
-{% img [图片] /images/docker-ops-manage-env.jpg %}
+{% img [图片] /images/docker/docker-ops-manage-env.jpg %}
 
 对不同的环境 配置不同的参数。
-{% img [图片] /images/docker-ops-manage-env-key.jpg %}
+{% img [图片] /images/docker/docker-ops-manage-env-key.jpg %}
 
 运维平台里面的配置管理，可以在线管理线上、测试环境等配置信息，配置管理可以添加、删除、修改代码连接的数据库信息、redis信息等配置信息。
 **实现逻辑大致如图所示。**
-{% img [图片] /images/docker-ops-manage-build.jpg %}
+{% img [图片] /images/docker/docker-ops-manage-build.jpg %}
 
 接下来看一下我们通过运维平台部署好的应用的界面：
-{% img [图片] /images/docker-ops-host-ok.jpg %}
+{% img [图片] /images/docker/docker-ops-host-ok.jpg %}
 
 {% blockquote %}
 主机就是发布好的主机，版本是容器运行镜像的版本，状态是容器的运行状态，在这里可以对容器进行远程管理。
